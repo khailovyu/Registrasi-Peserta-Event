@@ -28,9 +28,9 @@
 
         /* ANIMASI GETAR REEL SAAT SPINNING (RUMBLE) */
         @keyframes reelRumble {
-            0% { transform: translateY(-3px) scale(1.03); }
-            50% { transform: translateY(3px) scale(0.97); }
-            100% { transform: translateY(-3px) scale(1.03); }
+            0% { transform: translateY(-3px) scale(1.02); }
+            50% { transform: translateY(3px) scale(0.98); }
+            100% { transform: translateY(-3px) scale(1.02); }
         }
 
         /* ANIMASI HEBAT SAAT REEL TERKUNCI (ULTRA HARD SHAKE) */
@@ -52,8 +52,30 @@
         .heboh-card {
             animation: pulseGlow 3s infinite ease-in-out;
         }
+
+        /* DESAIN HEADER MESIN SLOT PERAK DENGAN TUAS (TANPA KUBAH 777) */
+        .hdr-slot-body {
+            background: linear-gradient(180deg, #D1D5DB 0%, #9CA3AF 50%, #6B7280 100%);
+            border: 3px solid #E5E7EB;
+            box-shadow: 0 8px 18px rgba(0,0,0,0.6), inset 0 2px 4px rgba(255,255,255,0.8);
+        }
+
+        /* SILINDER REEL PUTIH DENGAN CURVE SEPERTI GAMBAR */
+        .hdr-reel-cylinder {
+            width: 2.6rem;
+            height: 3.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(180deg, #E5E7EB 0%, #FFFFFF 30%, #FFFFFF 70%, #D1D5DB 100%);
+            border: 2px solid #4B5563;
+            border-radius: 0.75rem;
+            font-size: 1.8rem;
+            box-shadow: inset 0 4px 6px rgba(0,0,0,0.25), inset 0 -4px 6px rgba(0,0,0,0.25);
+            animation: reelRumble 0.12s infinite ease-in-out;
+        }
         
-        /* CLASS SLOTS */
+        /* CLASS SLOTS MODAL POPUP */
         .slot-reel {
             width: 3.2rem;
             height: 4.5rem;
@@ -118,14 +140,35 @@
     <!-- CONTAINER FORM PESERTA -->
     <div id="mainContainer" class="w-full max-w-md bg-white rounded-3xl overflow-hidden heboh-card border-2 border-yellow-500/60 my-6 relative">
         
-        <!-- HEADER FORM -->
+        <!-- HEADER FORM DENGAN MESIN SLOT DISAMBUNGKAN -->
         <div class="bg-gradient-to-r from-red-950 via-red-900 to-red-950 p-6 text-center border-b-4 border-yellow-500 relative overflow-hidden">
             <div class="absolute -top-10 -right-10 w-28 h-28 bg-yellow-500/20 rounded-full blur-xl"></div>
             <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-yellow-500/20 rounded-full blur-xl"></div>
             
-            <div class="inline-block p-4 rounded-full bg-gradient-to-tr from-yellow-600 to-yellow-300 border-2 border-yellow-200 mb-2 shadow-lg animate-bounce">
-                <i class="fa-solid fa-trophy text-3xl text-red-950"></i>
+            <!-- MESIN SLOT HEADER BENTUK PERAK SESUAI REFERENSI GAMBAR (TANPA KUBAH 777) -->
+            <div class="relative w-40 mx-auto mb-3 pt-2 pr-5">
+
+                <!-- TUAS MERAH KASINO DI SAMPING KANAN -->
+                <div class="absolute right-0 top-1/2 -translate-y-1/2 flex flex-col items-center z-10">
+                    <div class="w-4 h-4 rounded-full bg-red-600 border border-white shadow"></div>
+                    <div class="w-1.5 h-8 bg-gray-300 mx-auto"></div>
+                    <div class="w-4 h-3.5 bg-gray-600 rounded border border-gray-400"></div>
+                </div>
+
+                <!-- BODI UTUH PERAK DENGAN LENGKUNGAN ATAS -->
+                <div class="hdr-slot-body rounded-t-3xl rounded-b-xl p-2.5 relative">
+                    <!-- JENDELA HITAM TEMPAT 3 REEL SILINDER PUTIH BERPUTAR -->
+                    <div class="bg-slate-900 p-2 rounded-xl border border-slate-700 flex items-center justify-center gap-1.5 shadow-inner">
+                        <div id="hdrSlot1" class="hdr-reel-cylinder">👑</div>
+                        <div id="hdrSlot2" class="hdr-reel-cylinder">👑</div>
+                        <div id="hdrSlot3" class="hdr-reel-cylinder">🍒</div>
+                    </div>
+
+                    <!-- ALAS BASE MESIN -->
+                    <div class="bg-slate-700 h-2.5 mt-2 rounded-md border-t border-slate-500"></div>
+                </div>
             </div>
+
             <h1 class="text-2xl font-black tracking-wider uppercase gold-shimmer-text">LUCKYDRAW SPEKTAKULER</h1>
             <p class="text-xs text-yellow-200 mt-1 uppercase tracking-widest font-bold">✨ Registrasi Peserta Resmi ✨</p>
         </div>
@@ -245,6 +288,27 @@
                 emailjs.init(EMAILJS_CONFIG.publicKey);
             }
         })();
+
+        // ANIMASI MESIN SLOT HEADER BERPUTAR PADA SILINDER PUTIH
+        const CASINO_SYMBOLS = ["👑", "🍒", "💎", "🌟", "🔥", "🎰", "7️⃣"];
+        function startHeaderSlotAnimation() {
+            const h1 = document.getElementById('hdrSlot1');
+            const h2 = document.getElementById('hdrSlot2');
+            const h3 = document.getElementById('hdrSlot3');
+
+            setInterval(() => {
+                if (h1) h1.innerText = CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)];
+            }, 120);
+
+            setInterval(() => {
+                if (h2) h2.innerText = CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)];
+            }, 160);
+
+            setInterval(() => {
+                if (h3) h3.innerText = CASINO_SYMBOLS[Math.floor(Math.random() * CASINO_SYMBOLS.length)];
+            }, 140);
+        }
+        startHeaderSlotAnimation();
 
         // JEJAK BINTANG KURSOR
         document.addEventListener('mousemove', function(e) {
