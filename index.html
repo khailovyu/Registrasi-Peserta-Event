@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🎟️ LUCKYDRAW SPEKTAKULER - Form Registrasi Resmi</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=Orbitron:wght@600;800;900&family=Cinzel:wght@700;900&display=swap" rel="stylesheet">
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        crimson: {
+                            50: '#fff1f2',
+                            100: '#ffe4e6',
+                            200: '#fecdd3',
+                            300: '#fda4af',
+                            400: '#fb7185',
+                            500: '#f43f5e',
+                            600: '#e11d48',
+                            700: '#be123c',
+                            800: '#9f1239',
+                            900: '#881337',
+                            950: '#4c0519'
+                        },
+                        velvet: {
+                            base: '#700010',
+                            dark: '#3d0008',
+                            deep: '#1e0004'
+                        }
+                    },
+                    fontFamily: {
+                        orbitron: ['Orbitron', 'sans-serif'],
+                        cinzel: ['Cinzel', 'serif'],
+                        jakarta: ['"Plus Jakarta Sans"', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background: linear-gradient(135deg, #4c0519 0%, #200005 50%, #0d0002 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            min-height: 100vh;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Clean Luxury Card with Red & Pure White Tone */
+        .spektakuler-card {
+            background: linear-gradient(180deg, rgba(60, 2, 14, 0.95) 0%, rgba(25, 0, 5, 0.98) 100%);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        }
+
+        .white-heading {
+            background: linear-gradient(180deg, #ffffff 0%, #ffe4e6 60%, #fda4af 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.6));
+        }
+
+        .input-spektakuler {
+            background: rgba(15, 0, 3, 0.85);
+            border: 1.5px solid rgba(255, 255, 255, 0.25);
+            color: #ffffff;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .input-spektakuler:focus {
+            outline: none;
+            border-color: #f43f5e;
+            box-shadow: 0 0 15px rgba(244, 63, 94, 0.4);
+            background: rgba(28, 1, 6, 0.95);
+        }
+
+        .slot-box {
+            background: linear-gradient(180deg, #180004 0%, #3d0008 50%, #180004 100%);
+            border: 2px solid #f43f5e;
+            box-shadow: inset 0 0 10px rgba(244, 63, 94, 0.3), 0 4px 15px rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="flex flex-col justify-between min-h-screen relative">
+
+    <header class="bg-crimson-950/90 backdrop-blur-md border-b border-crimson-700/50 py-4 px-4 sticky top-0 z-40 shadow-lg">
+        <div class="max-w-4xl mx-auto flex items-center justify-between">
+            <div class="flex items-center gap-3 select-none">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-crimson-500 to-crimson-700 flex items-center justify-center border border-white/20 shadow-md">
+                    <i data-lucide="ticket" class="w-5 h-5 text-white"></i>
+                </div>
+                <h1 class="font-cinzel font-black text-lg sm:text-2xl white-heading tracking-wider">
+                    LUCKYDRAW SPEKTAKULER
+                </h1>
+            </div>
+
+            <button id="btnAudioToggle" onclick="toggleAudio()" class="px-3.5 py-1.5 rounded-xl bg-crimson-900 hover:bg-crimson-800 text-white font-orbitron font-bold text-xs flex items-center gap-2 border border-white/20 shadow-sm transition cursor-pointer">
+                <i data-lucide="volume-2" id="audioIcon" class="w-4 h-4 text-crimson-300"></i>
+                <span id="audioText" class="hidden sm:inline">SUARA: ON</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-xl mx-auto px-4 py-8 w-full flex-grow flex items-center justify-center relative z-10">
+        
+        <div class="w-full spektakuler-card rounded-3xl p-6 sm:p-10 relative overflow-hidden">
+
+            <div class="text-center mb-8">
+                <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-crimson-900/80 border border-crimson-500/50 text-crimson-100 text-xs font-orbitron font-extrabold tracking-widest uppercase mb-3">
+                    <i data-lucide="sparkles" class="w-4 h-4 text-crimson-400"></i> REGISTRASI PESERTA <i data-lucide="sparkles" class="w-4 h-4 text-crimson-400"></i>
+                </div>
+                <h2 class="font-cinzel font-black text-3xl sm:text-4xl white-heading leading-tight">
+                    LUCKYDRAW SPEKTAKULER
+                </h2>
+                <p class="text-xs sm:text-sm text-crimson-200 font-medium mt-2 tracking-wide">
+                    Isi data Anda untuk mendapatkan <span class="text-white font-bold underline">Kode Kupon 4-Digit Resmi</span> secara langsung!
+                </p>
+            </div>
+
+            <!-- Registration Form: Only Name, Jabatan, and Email -->
+            <form id="drawForm" onsubmit="processRegistration(event)" class="space-y-5">
+                
+                <!-- 1. Nama Lengkap -->
+                <div>
+                    <label class="block text-xs font-orbitron font-bold text-crimson-200 uppercase mb-2 tracking-wider flex items-center gap-2">
+                        <i data-lucide="user" class="w-4 h-4 text-crimson-400"></i> 1. NAMA LENGKAP <span class="text-white">*</span>
+                    </label>
+                    <input type="text" id="inputNama" required placeholder="Contoh: Budi Santoso" autocomplete="name" class="w-full px-4 py-3.5 rounded-xl input-spektakuler text-sm sm:text-base">
+                </div>
+
+                <!-- 2. Jabatan (Rules strictly hidden in background) -->
+                <div>
+                    <label class="block text-xs font-orbitron font-bold text-crimson-200 uppercase mb-2 tracking-wider flex items-center gap-2">
+                        <i data-lucide="award" class="w-4 h-4 text-crimson-400"></i> 2. JABATAN <span class="text-white">*</span>
+                    </label>
+                    <div class="relative">
+                        <select id="inputJabatan" required onchange="playClickSound()" class="w-full px-4 py-3.5 rounded-xl input-spektakuler text-sm sm:text-base appearance-none bg-velvet-dark cursor-pointer">
+                            <option value="" disabled selected>-- Pilih Jabatan --</option>
+                            <option value="Head">Head</option>
+                            <option value="SPV">SPV</option>
+                            <option value="Captain">Captain</option>
+                            <option value="Senior Staff">Senior Staff</option>
+                            <option value="Junior Staff">Junior Staff</option>
+                            <option value="Freelance">Freelance</option>
+                        </select>
+                        <i data-lucide="chevron-down" class="w-5 h-5 absolute right-4 top-3.5 text-crimson-300 pointer-events-none"></i>
+                    </div>
+                </div>
+
+                <!-- 3. Email -->
+                <div>
+                    <label class="block text-xs font-orbitron font-bold text-crimson-200 uppercase mb-2 tracking-wider flex items-center gap-2">
+                        <i data-lucide="mail" class="w-4 h-4 text-crimson-400"></i> 3. EMAIL PESERTA <span class="text-white">*</span>
+                    </label>
+                    <input type="email" id="inputEmail" required placeholder="nama@gmail.com" autocomplete="email" class="w-full px-4 py-3.5 rounded-xl input-spektakuler text-sm sm:text-base">
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="btnSubmit" class="w-full py-4 mt-4 bg-gradient-to-r from-crimson-600 via-crimson-500 to-crimson-700 hover:from-crimson-500 hover:to-crimson-600 text-white font-orbitron font-black text-base rounded-xl shadow-lg border border-white/30 transform active:scale-98 transition duration-200 flex items-center justify-center gap-3 cursor-pointer">
+                    <i data-lucide="send" class="w-5 h-5"></i> AMBIL KODE UNIK & DAFTAR
+                </button>
+
+            </form>
+
+        </div>
+
+    </main>
+
+    <div id="ticketModal" class="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm hidden flex items-center justify-center p-4">
+        
+        <div class="w-full max-w-md spektakuler-card rounded-3xl p-6 sm:p-8 relative text-center border-2 border-crimson-500 shadow-2xl transform scale-95 opacity-0 transition-all duration-300" id="modalCard">
+            
+            <div class="inline-block px-4 py-1 bg-crimson-900 rounded-full font-orbitron font-extrabold text-xs text-white tracking-widest uppercase mb-3 border border-crimson-500">
+                🎟️ KUPON LUCKYDRAW RESMI
+            </div>
+
+            <h3 class="font-cinzel font-black text-2xl sm:text-3xl white-heading">
+                REGISTRASI BERHASIL!
+            </h3>
+            
+            <p id="statusEmailText" class="text-xs text-crimson-200 mt-2 font-medium bg-crimson-950/80 px-3 py-2 rounded-lg border border-crimson-700/50">
+                Email tiket sedang dikirimkan ke <span id="confirmedEmail" class="text-white font-bold">...</span>
+            </p>
+
+            <!-- 4-Digit Code Box (Prefix generated automatically) -->
+            <div class="my-6">
+                <p class="text-xs font-orbitron text-crimson-300 mb-2 tracking-wider">KODE UNIK RESMI ANDA:</p>
+                <div class="flex justify-center gap-2.5">
+                    <div id="digit1" class="slot-box w-14 h-16 sm:w-16 sm:h-20 rounded-xl flex items-center justify-center font-orbitron font-black text-3xl sm:text-4xl text-white">0</div>
+                    <div id="digit2" class="slot-box w-14 h-16 sm:w-16 sm:h-20 rounded-xl flex items-center justify-center font-orbitron font-black text-3xl sm:text-4xl text-white">0</div>
+                    <div id="digit3" class="slot-box w-14 h-16 sm:w-16 sm:h-20 rounded-xl flex items-center justify-center font-orbitron font-black text-3xl sm:text-4xl text-white">0</div>
+                    <div id="digit4" class="slot-box w-14 h-16 sm:w-16 sm:h-20 rounded-xl flex items-center justify-center font-orbitron font-black text-3xl sm:text-4xl text-white">0</div>
+                </div>
+            </div>
+
+            <!-- Participant Info Confirmation -->
+            <div class="bg-black/70 p-4 rounded-xl border border-white/10 text-xs space-y-2 text-left font-mono mb-6">
+                <div class="flex justify-between border-b border-white/10 pb-1.5">
+                    <span class="text-gray-400">NAMA:</span>
+                    <span id="ticketNama" class="text-white font-bold">---</span>
+                </div>
+                <div class="flex justify-between border-b border-white/10 pb-1.5">
+                    <span class="text-gray-400">JABATAN:</span>
+                    <span id="ticketJabatan" class="text-crimson-200 font-bold">---</span>
+                </div>
+                <div class="flex justify-between pt-0.5">
+                    <span class="text-gray-400">EMAIL:</span>
+                    <span id="ticketEmail" class="text-white font-bold truncate max-w-[180px]">---</span>
+                </div>
+            </div>
+
+            <!-- Modal Action Buttons -->
+            <div class="grid grid-cols-2 gap-2">
+                <button onclick="copyCode()" class="py-3.5 bg-black/80 hover:bg-black text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 border border-white/20 transition cursor-pointer">
+                    <i data-lucide="copy" class="w-4 h-4"></i> SALIN KODE
+                </button>
+                <button onclick="closeModal()" class="py-3.5 bg-white hover:bg-gray-100 text-crimson-950 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition cursor-pointer">
+                    <i data-lucide="check" class="w-4 h-4"></i> SELESAI
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none bg-crimson-900 text-white px-5 py-3 rounded-xl shadow-xl font-orbitron font-bold text-xs flex items-center gap-3 border border-white/20">
+        <i data-lucide="info" class="w-4 h-4 text-crimson-300"></i>
+        <span id="toastMsg">Notifikasi</span>
+    </div>
+
+    <!-- Clean Footer -->
+    <footer class="py-4 text-center text-xs text-crimson-300/50 font-mono select-none">
+        © LUCKYDRAW SPEKTAKULER • Official Registration Portal
+    </footer>
+
+    <script>
+        /*
+         * =========================================================================
+         * 🔒 KREDENSIAL RESMI EMAILJS & WEBHOOK ADMIN
+         * =========================================================================
+         */
+        const CONFIG_EMAILJS = {
+            serviceId: "service_xxxxxxx",   // <-- Service ID EmailJS
+            templateId: "template_xxxxxxx", // <-- Template ID EmailJS
+            publicKey: "xxxxxxxxx"          // <-- Public Key EmailJS
+        };
+
+        // Opsional: Jika ingin otomatis tersimpan di Google Sheet, masukkan URL Apps Script Webhook di sini
+        const GOOGLE_SHEET_WEBHOOK_URL = ""; 
+
+        let isAudioEnabled = true;
+        let activeTicket = null;
+
+        // Prefix digit rahasia sesuai jabatan (Tidak pernah dibocorkan ke peserta)
+        const prefixMap = {
+            "Head": "9",
+            "SPV": "8",
+            "Captain": "7",
+            "Senior Staff": "6",
+            "Junior Staff": "5",
+            "Freelance": "4"
+        };
+
+        // Web Audio Synthesizer
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) audioCtx = new AudioContext();
+        }
+
+        function playClickSound() {
+            if (!isAudioEnabled) return;
+            initAudio();
+            try {
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(660, audioCtx.currentTime + 0.05);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.05);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.05);
+            } catch (e) {}
+        }
+
+        function playSuccessSound() {
+            if (!isAudioEnabled) return;
+            initAudio();
+            try {
+                const notes = [523.25, 659.25, 783.99, 1046.50]; 
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime + idx * 0.08);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.08 + 0.3);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + idx * 0.08);
+                    osc.stop(audioCtx.currentTime + idx * 0.08 + 0.3);
+                });
+            } catch (e) {}
+        }
+
+        function toggleAudio() {
+            isAudioEnabled = !isAudioEnabled;
+            const text = document.getElementById('audioText');
+            const icon = document.getElementById('audioIcon');
+            if (isAudioEnabled) {
+                if (text) text.innerText = "SUARA: ON";
+                if (icon) icon.setAttribute('data-lucide', 'volume-2');
+                showToast("Efek Suara Aktif!");
+            } else {
+                if (text) text.innerText = "SUARA: OFF";
+                if (icon) icon.setAttribute('data-lucide', 'volume-x');
+                showToast("Efek Suara Dimatikan");
+            }
+            if (window.lucide) lucide.createIcons();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (window.lucide) lucide.createIcons();
+        });
+
+        function generateCode(jabatan) {
+            const prefix = prefixMap[jabatan] || "1";
+            const randomSuffix = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
+            return `${prefix}${randomSuffix}`;
+        }
+
+        function safeSetText(id, text) {
+            const el = document.getElementById(id);
+            if (el) el.innerText = text;
+        }
+
+        function safeSetHTML(id, html) {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = html;
+        }
+
+        async function processRegistration(e) {
+            if (e && e.preventDefault) e.preventDefault();
+
+            try {
+                const inputNama = document.getElementById('inputNama');
+                const inputJabatan = document.getElementById('inputJabatan');
+                const inputEmail = document.getElementById('inputEmail');
+
+                const nama = inputNama ? inputNama.value.trim() : '';
+                const jabatan = inputJabatan ? inputJabatan.value : '';
+                const email = inputEmail ? inputEmail.value.trim() : '';
+
+                if (!nama || !jabatan || !email) {
+                    showToast("Harap isi semua kolom pendaftaran!");
+                    return;
+                }
+
+                const code = generateCode(jabatan);
+
+                activeTicket = {
+                    id: Date.now(),
+                    nama,
+                    jabatan,
+                    email,
+                    code
+                };
+
+                // Populate Modal Data
+                safeSetText('ticketNama', nama);
+                safeSetText('ticketJabatan', jabatan);
+                safeSetText('ticketEmail', email);
+                safeSetText('confirmedEmail', email);
+
+                openModal();
+                animateSlotNumbers(code);
+                playSuccessSound();
+                fireConfetti();
+
+                // Send email in silent background
+                await sendEmailNotificationSilent(activeTicket);
+
+                // Kirim rekapan ke Google Sheet Admin (jika diisi webhooknya)
+                sendToGoogleSheetSilent(activeTicket);
+            } catch (err) {
+                console.error("Error during registration process:", err);
+                showToast("Terjadi kendala pada form: " + (err.message || "Silakan coba lagi"));
+            }
+        }
+
+        async function sendToGoogleSheetSilent(ticket) {
+            if (!GOOGLE_SHEET_WEBHOOK_URL) return;
+            try {
+                fetch(GOOGLE_SHEET_WEBHOOK_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        timestamp: new Date().toLocaleString('id-ID'),
+                        nama: ticket.nama,
+                        jabatan: ticket.jabatan,
+                        email: ticket.email,
+                        kode: ticket.code
+                    })
+                });
+            } catch (e) {
+                console.warn("GSheet sync skipped:", e);
+            }
+        }
+
+        function animateSlotNumbers(code) {
+            const digits = [
+                document.getElementById('digit1'),
+                document.getElementById('digit2'),
+                document.getElementById('digit3'),
+                document.getElementById('digit4')
+            ];
+            
+            digits.forEach((el, index) => {
+                if (!el) return;
+                let intervalCount = 0;
+                const timer = setInterval(() => {
+                    el.innerText = Math.floor(Math.random() * 10);
+                    intervalCount++;
+                    
+                    if (intervalCount > 8 + index * 4) {
+                        clearInterval(timer);
+                        el.innerText = code[index] || '0';
+                    }
+                }, 50);
+            });
+        }
+
+        function fireConfetti() {
+            try {
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 75,
+                        spread: 80,
+                        origin: { y: 0.6 },
+                        colors: ['#ffffff', '#f43f5e', '#be123c', '#fda4af']
+                    });
+                }
+            } catch(e) {}
+        }
+
+        async function sendEmailNotificationSilent(ticket) {
+            // Read from script constants or fallback to storage if run on admin's computer
+            const serviceId = (CONFIG_EMAILJS.serviceId && CONFIG_EMAILJS.serviceId !== "service_xxxxxxx")
+                ? CONFIG_EMAILJS.serviceId 
+                : (localStorage.getItem('ls_service_id') || '');
+                
+            const templateId = (CONFIG_EMAILJS.templateId && CONFIG_EMAILJS.templateId !== "template_xxxxxxx")
+                ? CONFIG_EMAILJS.templateId 
+                : (localStorage.getItem('ls_template_id') || '');
+                
+            const publicKey = (CONFIG_EMAILJS.publicKey && CONFIG_EMAILJS.publicKey !== "xxxxxxxxx")
+                ? CONFIG_EMAILJS.publicKey 
+                : (localStorage.getItem('ls_public_key') || '');
+
+            if (serviceId && templateId && publicKey) {
+                safeSetHTML('statusEmailText', `⏳ Mengirim kode ke <span class="text-white font-bold">${ticket.email}</span>...`);
+                try {
+                    emailjs.init(publicKey);
+                    
+                    const templateParams = {
+                        to_name: ticket.nama,
+                        position: ticket.jabatan,
+                        unique_code: ticket.code,
+                        to_email: ticket.email
+                    };
+
+                    await emailjs.send(serviceId, templateId, templateParams);
+                    safeSetHTML('statusEmailText', `✅ Email tiket resmi telah dikirim ke <span class="text-white font-bold">${ticket.email}</span>`);
+                    showToast("Email berhasil terkirim!");
+                } catch (err) {
+                    console.warn("EmailJS error during silent send:", err);
+                    safeSetHTML('statusEmailText', `⚠️ Kode tersimpan! Cek koneksi email Anda.`);
+                }
+            } else {
+                safeSetHTML('statusEmailText', `✅ Registrasi berhasil tersimpan!`);
+            }
+        }
+
+        function copyCode() {
+            if (!activeTicket) return;
+            try {
+                const tempInput = document.createElement('input');
+                tempInput.value = activeTicket.code;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
+                showToast(`Kode [ ${activeTicket.code} ] berhasil disalin!`);
+            } catch (e) {
+                showToast(`Kode: ${activeTicket.code}`);
+            }
+        }
+
+        function openModal() {
+            const modal = document.getElementById('ticketModal');
+            const card = document.getElementById('modalCard');
+            if (modal) modal.classList.remove('hidden');
+            if (card) {
+                setTimeout(() => {
+                    card.classList.remove('scale-95', 'opacity-0');
+                    card.classList.add('scale-100', 'opacity-100');
+                }, 20);
+            }
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('ticketModal');
+            const card = document.getElementById('modalCard');
+            if (card) {
+                card.classList.remove('scale-100', 'opacity-100');
+                card.classList.add('scale-95', 'opacity-0');
+            }
+            setTimeout(() => {
+                if (modal) modal.classList.add('hidden');
+                const form = document.getElementById('drawForm');
+                if (form) form.reset();
+            }, 200);
+        }
+
+        function showToast(msg) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            if (toastMsg) toastMsg.innerText = msg;
+            if (!toast) return;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 2800);
+        }
+    </script>
+</body>
+</html>
