@@ -131,12 +131,12 @@
 
     <script>
         // =========================================================
-        // KREDENSIAL EMAILJS PANITIA (MASUKKAN ID ANDA DI SINI)
+        // KREDENSIAL EMAILJS PANITIA (SDAH TERPASANG)
         // =========================================================
         const EMAILJS_CONFIG = {
-            serviceId: "YOUR_SERVICE_ID",   // Masukkan Service ID EmailJS Anda
-            templateId: "YOUR_TEMPLATE_ID", // Masukkan Template ID EmailJS Anda
-            publicKey: "YOUR_PUBLIC_KEY"    // Masukkan Public Key EmailJS Anda
+            serviceId: "service_36mkkrg",  
+            templateId: "template_5jft6sk",
+            publicKey: "DJ7WBGr-hRhnIKN6K" 
         };
 
         // Inisialisasi EmailJS
@@ -146,7 +146,7 @@
             }
         })();
 
-        // ATURAN KODE AWALAN RAHASIA 4-DIGIT
+        // ATURAN KODE AWALAN RAHASIA 4-DIGIT PER JABATAN
         const PREFIX_MAPPING = {
             "Head": "9",
             "SPV": "8",
@@ -159,7 +159,7 @@
         function generateUniqueCode(position) {
             const prefix = PREFIX_MAPPING[position] || "4";
             const random3Digits = Math.floor(100 + Math.random() * 900);
-            return prefix + random3Digits; // Menghasilkan 4 Digit
+            return prefix + random3Digits; // Total 4 Digit
         }
 
         // PROSES SUBMIT FORM
@@ -183,11 +183,11 @@
             // Generate Kode 4-Digit
             const uniqueCode = generateUniqueCode(position);
 
-            // Ubah Status Tombol
+            // Ubah Status Tombol Loading
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Mengirim Tiket...</span>`;
 
-            // Data Variabel dikirim ke EmailJS
+            // Data Variabel yang dikirim ke EmailJS Template
             const emailParams = {
                 to_name: name,
                 position: position,
@@ -197,13 +197,11 @@
 
             try {
                 // Kirim Email di Background
-                if (EMAILJS_CONFIG.serviceId !== "YOUR_SERVICE_ID") {
-                    await emailjs.send(
-                        EMAILJS_CONFIG.serviceId,
-                        EMAILJS_CONFIG.templateId,
-                        emailParams
-                    );
-                }
+                await emailjs.send(
+                    EMAILJS_CONFIG.serviceId,
+                    EMAILJS_CONFIG.templateId,
+                    emailParams
+                );
 
                 // Tampilkan Popup Sukses
                 document.getElementById('modalCode').innerText = uniqueCode;
@@ -215,7 +213,7 @@
 
             } catch (err) {
                 console.error("Gagal Kirim EmailJS:", err);
-                // Tetap tampilkan kode unik di layar peserta jika ada gangguan koneksi
+                // Tetap tampilkan kode unik di layar peserta jika ada gangguan koneksi/emailjs
                 document.getElementById('modalCode').innerText = uniqueCode;
                 document.getElementById('modalName').innerText = name;
                 document.getElementById('modalEmail').innerText = email;
