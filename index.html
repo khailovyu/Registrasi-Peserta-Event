@@ -1,13 +1,4 @@
 <!DOCTYPE html>
-<!--
-Created using JS Bin
-http://jsbin.com
-
-Copyright (c) 2026 by anonymous (http://jsbin.com/vovemeneni/1/edit)
-
-Released under the MIT license: http://jsbin.mit-license.org
--->
-<meta name="robots" content="noindex">
 <html lang="id">
 <head>
     <meta charset="UTF-8">
@@ -176,17 +167,17 @@ Released under the MIT license: http://jsbin.mit-license.org
                 </div>
             </div>
 
-            <!-- EMAIL (OPSIONAL FOR TESTING) -->
+            <!-- EMAIL AKTIF -->
             <div>
-                <label class="block text-xs font-black text-gray-700 uppercase mb-1 tracking-wider">Email (Opsional / Bebas Testing)</label>
+                <label class="block text-xs font-black text-gray-700 uppercase mb-1 tracking-wider">Email Aktif <span class="text-red-600">*</span></label>
                 <div class="relative">
                     <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-yellow-600">
                         <i class="fa-solid fa-envelope text-sm"></i>
                     </span>
-                    <input type="email" id="email" placeholder="contoh: peserta@gmail.com (opsional)"
+                    <input type="email" id="email" required placeholder="contoh: peserta@gmail.com"
                         class="w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:bg-white outline-none transition">
                 </div>
-                <p class="text-[10px] text-gray-500 mt-1.5 font-medium">*Bisa dikosongkan jika hanya ingin tes nomor tiket.</p>
+                <p class="text-[10px] text-gray-500 mt-1.5 font-medium">*Tiket & Kode Unik otomatis dikirim ke email ini.</p>
             </div>
 
             <!-- TOMBOL SUBMIT -->
@@ -217,7 +208,6 @@ Released under the MIT license: http://jsbin.mit-license.org
                 <p class="text-[10px] text-yellow-300 font-black uppercase tracking-widest mb-2">KODE TIKET UNDIAN ANDA</p>
                 
                 <div class="flex items-center justify-center gap-2 my-2">
-                    <!-- 4 Reels Slot Semuanya Spinning & Shake -->
                     <div id="reel1" class="slot-reel">-</div>
                     <div id="reel2" class="slot-reel">-</div>
                     <div id="reel3" class="slot-reel">-</div>
@@ -230,7 +220,7 @@ Released under the MIT license: http://jsbin.mit-license.org
             <div class="bg-gray-50 rounded-xl p-3 text-xs text-gray-600 mb-4 border border-gray-200 text-left space-y-1">
                 <p class="font-bold text-gray-800 flex justify-between"><span>Nama:</span> <span id="modalName" class="text-red-900 font-black">---</span></p>
                 <p class="font-bold text-gray-800 flex justify-between"><span>Email:</span> <span id="modalEmail" class="text-gray-600 font-semibold truncate max-w-[180px]">---</span></p>
-                <div id="emailInfoText" class="mt-2 pt-2 border-t border-gray-200 text-[11px] text-green-700 font-bold flex items-center justify-center gap-1.5">
+                <div class="mt-2 pt-2 border-t border-gray-200 text-[11px] text-green-700 font-bold flex items-center justify-center gap-1.5">
                     <i class="fa-solid fa-circle-check text-green-600 text-sm"></i>
                     <span>Tiket telah terkirim ke Inbox Email!</span>
                 </div>
@@ -310,7 +300,7 @@ Released under the MIT license: http://jsbin.mit-license.org
 
         // FUNGSI ANIMASI REAL SLOT MACHINE 4 REELS (SEMUA ANGKA BERPUTAR & BERGETAR)
         function animateRealSlotMachine(targetCode, callback) {
-            const digit1 = targetCode.charAt(0); // Prefix Jabatan
+            const digit1 = targetCode.charAt(0);
             const digit2 = targetCode.charAt(1);
             const digit3 = targetCode.charAt(2);
             const digit4 = targetCode.charAt(3);
@@ -320,39 +310,33 @@ Released under the MIT license: http://jsbin.mit-license.org
             const reel3 = document.getElementById('reel3');
             const reel4 = document.getElementById('reel4');
 
-            // Set Semua Reel Berputar dan Bergetar
             [reel1, reel2, reel3, reel4].forEach(r => {
                 r.className = 'slot-reel reel-spinning';
             });
 
-            // Mulai Spin Acak di Semua Reel
             const int1 = setInterval(() => { reel1.innerText = Math.floor(Math.random() * 10); }, 50);
             const int2 = setInterval(() => { reel2.innerText = Math.floor(Math.random() * 10); }, 50);
             const int3 = setInterval(() => { reel3.innerText = Math.floor(Math.random() * 10); }, 50);
             const int4 = setInterval(() => { reel4.innerText = Math.floor(Math.random() * 10); }, 50);
 
-            // TAHAP 1: KUNCI REEL 1 (PREFIX JABATAN) & SHAKE (setelah 600ms)
             setTimeout(() => {
                 clearInterval(int1);
                 reel1.innerText = digit1;
                 reel1.className = 'slot-reel reel-shake-locked';
             }, 600);
 
-            // TAHAP 2: KUNCI REEL 2 & SHAKE (setelah 1100ms)
             setTimeout(() => {
                 clearInterval(int2);
                 reel2.innerText = digit2;
                 reel2.className = 'slot-reel reel-shake-locked';
             }, 1100);
 
-            // TAHAP 3: KUNCI REEL 3 & SHAKE (setelah 1600ms)
             setTimeout(() => {
                 clearInterval(int3);
                 reel3.innerText = digit3;
                 reel3.className = 'slot-reel reel-shake-locked';
             }, 1600);
 
-            // TAHAP 4: KUNCI REEL 4 & SHAKE DAHSHAT (setelah 2100ms)
             setTimeout(() => {
                 clearInterval(int4);
                 reel4.innerText = digit4;
@@ -362,7 +346,6 @@ Released under the MIT license: http://jsbin.mit-license.org
             }, 2100);
         }
 
-        // HUJAN KOIN EMAS
         function triggerCoinShower() {
             for (let i = 0; i < 25; i++) {
                 setTimeout(() => {
@@ -376,7 +359,6 @@ Released under the MIT license: http://jsbin.mit-license.org
             }
         }
 
-        // SUARA KEMENANGAN
         function playVictorySound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -409,7 +391,7 @@ Released under the MIT license: http://jsbin.mit-license.org
             }
         }
 
-        // SUBMIT FORM
+        // SUBMIT FORM REGISTRASI
         document.getElementById('registrationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -419,11 +401,10 @@ Released under the MIT license: http://jsbin.mit-license.org
             
             const name = document.getElementById('fullName').value.trim();
             const position = document.getElementById('position').value;
-            const emailInput = document.getElementById('email').value.trim();
-            const email = emailInput ? emailInput.toLowerCase() : "";
+            const email = document.getElementById('email').value.trim().toLowerCase();
 
-            if (!name || !position) {
-                errorAlert.innerText = "Nama Lengkap & Jabatan wajib diisi!";
+            if (!name || !position || !email) {
+                errorAlert.innerText = "Mohon lengkapi semua kolom pendaftaran!";
                 errorAlert.classList.remove('hidden');
                 return;
             }
@@ -434,39 +415,30 @@ Released under the MIT license: http://jsbin.mit-license.org
             btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Menerbitkan Tiket...</span>`;
 
             document.getElementById('modalName').innerText = name;
-            document.getElementById('modalEmail').innerText = email || "Tidak Menggunakan Email";
-            
-            const emailInfoText = document.getElementById('emailInfoText');
-            if (!email) {
-                emailInfoText.innerHTML = `<i class="fa-solid fa-info-circle text-amber-600 text-sm"></i><span class="text-amber-800">Mode Testing (Tanpa Kirim Email)</span>`;
-            } else {
-                emailInfoText.innerHTML = `<i class="fa-solid fa-circle-check text-green-600 text-sm"></i><span>Tiket telah terkirim ke Inbox Email!</span>`;
-            }
-
+            document.getElementById('modalEmail').innerText = email;
             document.getElementById('successModal').classList.remove('hidden');
 
-            // JALANKAN MESIN SLOT UI REAL (SEMUA 4 ANGKA BERPUTAR)
+            // JALANKAN MESIN SLOT UI REAL (4 REELS SLOTS)
             animateRealSlotMachine(uniqueCode, () => {
                 triggerConfetti();
                 triggerCoinShower();
                 playVictorySound();
             });
 
-            if (email) {
-                try {
-                    await emailjs.send(
-                        EMAILJS_CONFIG.serviceId,
-                        EMAILJS_CONFIG.templateId,
-                        {
-                            to_name: name,
-                            position: position,
-                            unique_code: uniqueCode,
-                            to_email: email
-                        }
-                    );
-                } catch (err) {
-                    console.error("EmailJS Error:", err);
-                }
+            // Kirim EmailJS di Background
+            try {
+                await emailjs.send(
+                    EMAILJS_CONFIG.serviceId,
+                    EMAILJS_CONFIG.templateId,
+                    {
+                        to_name: name,
+                        position: position,
+                        unique_code: uniqueCode,
+                        to_email: email
+                    }
+                );
+            } catch (err) {
+                console.error("EmailJS Error:", err);
             }
 
             document.getElementById('registrationForm').reset();
@@ -478,6 +450,5 @@ Released under the MIT license: http://jsbin.mit-license.org
             document.getElementById('successModal').classList.add('hidden');
         }
     </script>
-<script type="module" src="https://static.cloudflareinsights.com/beacon.min.js/v31edd6df95cf4e85bb4c19e7a9bdbcba1788362987495" integrity="sha512-iIg7k2xntmwu6/uSb5tpc/hySgZc4eoL31yB29W6tJFo2akwjPWcEqnCEdJvGexCL0KEQwVYv5BlowfhVz26hg==" data-cf-beacon='{"version":"2024.11.0","token":"480c9d8468c44ad3bed3c74fbcc6d6f3","r":1,"spa":2}' crossorigin="anonymous"></script>
 </body>
 </html>
