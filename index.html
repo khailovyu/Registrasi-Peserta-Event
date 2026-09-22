@@ -14,20 +14,43 @@
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
         @keyframes pulseGlow {
-            0%, 100% { box-shadow: 0 0 25px rgba(234, 179, 8, 0.4), 0 20px 50px rgba(0, 0, 0, 0.7); }
-            50% { box-shadow: 0 0 45px rgba(234, 179, 8, 0.8), 0 20px 50px rgba(0, 0, 0, 0.9); }
+            0%, 100% { box-shadow: 0 0 25px rgba(234, 179, 8, 0.5), 0 20px 50px rgba(0, 0, 0, 0.8); }
+            50% { box-shadow: 0 0 50px rgba(234, 179, 8, 0.9), 0 20px 60px rgba(185, 28, 28, 0.7); }
         }
         @keyframes goldShimmer {
             0% { background-position: -200% 0; }
             100% { background-position: 200% 0; }
         }
+        @keyframes coinFall {
+            0% { transform: translateY(-50px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+        }
+        @keyframes runningLight {
+            0% { opacity: 0.3; transform: scale(0.8); }
+            50% { opacity: 1; transform: scale(1.3); box-shadow: 0 0 10px #FFE259; }
+            100% { opacity: 0.3; transform: scale(0.8); }
+        }
+        @keyframes screenShake {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            15% { transform: translate(-10px, -10px) rotate(-1deg); }
+            30% { transform: translate(10px, 12px) rotate(1deg); }
+            45% { transform: translate(-8px, 6px) rotate(-1deg); }
+            60% { transform: translate(8px, -6px) rotate(1deg); }
+            75% { transform: translate(-4px, -4px) rotate(0deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
         body {
             background: radial-gradient(circle at center, #800A0A 0%, #4A0404 50%, #1A0000 100%);
             min-height: 100vh;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            overflow-x: hidden;
         }
         .heboh-card {
             animation: pulseGlow 3s infinite ease-in-out;
+        }
+        .shake-active {
+            animation: screenShake 0.6s cubic-bezier(.36,.07,.19,.97) both;
         }
         .gold-shimmer-text {
             background: linear-gradient(90deg, #FFE259 0%, #FFA751 50%, #FFE259 100%);
@@ -36,90 +59,145 @@
             -webkit-background-clip: text;
             animation: goldShimmer 3s linear infinite;
         }
+        
+        /* Style Sparkle Cursor & Koin */
+        .sparkle {
+            position: fixed;
+            pointer-events: none;
+            color: #FFDF00;
+            font-size: 14px;
+            animation: fadeSparkle 0.8s linear forwards;
+            z-index: 9999;
+        }
+        @keyframes fadeSparkle {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            100% { transform: scale(0.2) rotate(180deg) translateY(15px); opacity: 0; }
+        }
+        .falling-coin {
+            position: fixed;
+            top: -40px;
+            pointer-events: none;
+            z-index: 9998;
+            font-size: 26px;
+            animation: coinFall 2.5s ease-in forwards;
+        }
+
+        /* Lampu LED Running Lights */
+        .led-light {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #FBBF24;
+            display: inline-block;
+            position: absolute;
+            z-index: 20;
+        }
     </style>
 </head>
 <body class="flex items-center justify-center p-4">
 
-    <!-- CONTAINER FORM PESERTA -->
-    <div class="w-full max-w-md bg-white rounded-3xl overflow-hidden heboh-card border-2 border-yellow-500/60 my-6 relative">
+    <!-- CONTAINER FORM PESERTA DENGAN LAMPU LED CASINO -->
+    <div id="mainContainer" class="w-full max-w-md bg-white rounded-3xl overflow-hidden heboh-card border-4 border-yellow-500/80 my-6 relative p-1">
         
-        <!-- HEADER FORM -->
-        <div class="bg-gradient-to-r from-red-950 via-red-900 to-red-950 p-6 text-center border-b-4 border-yellow-500 relative overflow-hidden">
-            <div class="absolute -top-10 -right-10 w-28 h-28 bg-yellow-500/20 rounded-full blur-xl"></div>
-            <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-yellow-500/20 rounded-full blur-xl"></div>
-            
-            <div class="inline-block p-4 rounded-full bg-gradient-to-tr from-yellow-600 to-yellow-300 border-2 border-yellow-200 mb-2 shadow-lg animate-bounce">
-                <i class="fa-solid fa-trophy text-3xl text-red-950"></i>
-            </div>
-            <h1 class="text-2xl font-black tracking-wider uppercase gold-shimmer-text">LUCKYDRAW SPEKTAKULER</h1>
-            <p class="text-xs text-yellow-200 mt-1 uppercase tracking-widest font-bold">✨ Registrasi Peserta Resmi ✨</p>
-        </div>
+        <!-- LAMPU LED RUNNING LIGHTS SEKITAR BINGKAI -->
+        <div id="ledContainer" class="absolute inset-0 pointer-events-none overflow-hidden rounded-3xl"></div>
 
-        <!-- FORM REGISTRASI -->
-        <form id="registrationForm" class="p-6 space-y-4">
-            
-            <div id="errorAlert" class="hidden p-3 bg-red-100 border-l-4 border-red-600 text-red-700 text-xs rounded-lg font-bold"></div>
-
-            <!-- NAMA LENGKAP -->
-            <div>
-                <label class="block text-xs font-black text-gray-700 uppercase mb-1 tracking-wider">Nama Lengkap <span class="text-red-600">*</span></label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-yellow-600">
-                        <i class="fa-solid fa-user text-sm"></i>
-                    </span>
-                    <input type="text" id="fullName" required placeholder="Masukkan nama lengkap Anda"
-                        class="w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:bg-white outline-none transition">
+        <div class="bg-white rounded-2xl overflow-hidden relative z-10">
+            <!-- HEADER FORM -->
+            <div class="bg-gradient-to-r from-red-950 via-red-900 to-red-950 p-6 text-center border-b-4 border-yellow-500 relative overflow-hidden">
+                <div class="absolute -top-10 -right-10 w-28 h-28 bg-yellow-500/20 rounded-full blur-xl"></div>
+                <div class="absolute -bottom-10 -left-10 w-28 h-28 bg-yellow-500/20 rounded-full blur-xl"></div>
+                
+                <div class="inline-block p-4 rounded-full bg-gradient-to-tr from-yellow-600 to-yellow-300 border-2 border-yellow-200 mb-2 shadow-lg animate-bounce">
+                    <i class="fa-solid fa-trophy text-3xl text-red-950"></i>
                 </div>
+                <h1 class="text-2xl font-black tracking-wider uppercase gold-shimmer-text">LUCKYDRAW SPEKTAKULER</h1>
+                <p class="text-xs text-yellow-200 mt-1 uppercase tracking-widest font-bold">✨ Registrasi Peserta Resmi ✨</p>
             </div>
 
-            <!-- JABATAN -->
-            <div>
-                <label class="block text-xs font-black text-gray-700 uppercase mb-1 tracking-wider">Jabatan <span class="text-red-600">*</span></label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-yellow-600">
-                        <i class="fa-solid fa-briefcase text-sm"></i>
-                    </span>
-                    <select id="position" required
-                        class="w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:bg-white outline-none transition">
-                        <option value="" disabled selected>-- Pilih Jabatan --</option>
-                        <option value="Head">Head</option>
-                        <option value="SPV">SPV</option>
-                        <option value="Captain">Captain</option>
-                        <option value="Senior Staff">Senior Staff</option>
-                        <option value="Junior Staff">Junior Staff</option>
-                        <option value="Freelance">Freelance</option>
-                    </select>
+            <!-- FORM REGISTRASI -->
+            <form id="registrationForm" class="p-6 space-y-4">
+                
+                <div id="errorAlert" class="hidden p-3 bg-red-100 border-l-4 border-red-600 text-red-700 text-xs rounded-lg font-bold"></div>
+
+                <!-- NAMA LENGKAP -->
+                <div>
+                    <label class="block text-xs font-black text-gray-700 uppercase mb-1 tracking-wider">Nama Lengkap <span class="text-red-600">*</span></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-yellow-600">
+                            <i class="fa-solid fa-user text-sm"></i>
+                        </span>
+                        <input type="text" id="fullName" required placeholder="Masukkan nama lengkap Anda"
+                            class="w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:bg-white outline-none transition">
+                    </div>
                 </div>
-            </div>
 
-            <!-- EMAIL -->
-            <div>
-                <label class="block text-xs font-black text-gray-700 uppercase mb-1 tracking-wider">Email Aktif <span class="text-red-600">*</span></label>
-                <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-yellow-600">
-                        <i class="fa-solid fa-envelope text-sm"></i>
-                    </span>
-                    <input type="email" id="email" required placeholder="contoh: peserta@gmail.com"
-                        class="w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:bg-white outline-none transition">
+                <!-- JABATAN -->
+                <div>
+                    <label class="block text-xs font-black text-gray-700 uppercase mb-1 tracking-wider">Jabatan <span class="text-red-600">*</span></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-yellow-600">
+                            <i class="fa-solid fa-briefcase text-sm"></i>
+                        </span>
+                        <select id="position" required
+                            class="w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:bg-white outline-none transition">
+                            <option value="" disabled selected>-- Pilih Jabatan --</option>
+                            <option value="Head">Head</option>
+                            <option value="SPV">SPV</option>
+                            <option value="Captain">Captain</option>
+                            <option value="Senior Staff">Senior Staff</option>
+                            <option value="Junior Staff">Junior Staff</option>
+                            <option value="Freelance">Freelance</option>
+                        </select>
+                    </div>
                 </div>
-                <p class="text-[10px] text-gray-500 mt-1.5 font-medium">*Tiket & Kode Unik otomatis dikirim ke email ini.</p>
+
+                <!-- EMAIL -->
+                <div>
+                    <label class="block text-xs font-black text-gray-700 uppercase mb-1 tracking-wider">Email Aktif <span class="text-red-600">*</span></label>
+                    <div class="relative">
+                        <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-yellow-600">
+                            <i class="fa-solid fa-envelope text-sm"></i>
+                        </span>
+                        <input type="email" id="email" required placeholder="contoh: peserta@gmail.com"
+                            class="w-full pl-10 pr-3 py-3 bg-gray-50 border-2 border-gray-200 rounded-xl text-sm font-semibold focus:ring-2 focus:ring-yellow-500 focus:border-yellow-500 focus:bg-white outline-none transition">
+                    </div>
+                    <p class="text-[10px] text-gray-500 mt-1.5 font-medium">*Tiket & Kode Unik otomatis dikirim ke email ini.</p>
+                </div>
+
+                <!-- TOMBOL SUBMIT -->
+                <button type="submit" id="btnSubmit"
+                    class="w-full py-3.5 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 hover:from-yellow-400 hover:to-amber-400 text-red-950 font-black rounded-xl shadow-lg hover:shadow-yellow-500/50 transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 mt-4 text-base border-2 border-yellow-200 uppercase tracking-wider">
+                    <span>Daftar & Dapatkan Tiket</span>
+                    <i class="fa-solid fa-gift text-lg"></i>
+                </button>
+            </form>
+
+            <!-- FOOTER -->
+            <div class="bg-gray-50 p-4 border-t border-gray-100 text-center text-xs font-bold text-gray-400">
+                &copy; Panitia LUCKYDRAW SPEKTAKULER
             </div>
-
-            <!-- TOMBOL SUBMIT -->
-            <button type="submit" id="btnSubmit"
-                class="w-full py-3.5 bg-gradient-to-r from-yellow-500 via-yellow-400 to-amber-500 hover:from-yellow-400 hover:to-amber-400 text-red-950 font-black rounded-xl shadow-lg hover:shadow-yellow-500/50 transition transform hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center gap-2 mt-4 text-base border-2 border-yellow-200 uppercase tracking-wider">
-                <span>Daftar & Dapatkan Tiket</span>
-                <i class="fa-solid fa-gift text-lg"></i>
-            </button>
-        </form>
-
-        <!-- FOOTER -->
-        <div class="bg-gray-50 p-4 border-t border-gray-100 text-center text-xs font-bold text-gray-400">
-            &copy; Panitia LUCKYDRAW SPEKTAKULER
         </div>
     </div>
 
-    <!-- MODAL POPUP SUKSES -->
+    <!-- MODAL 1: ANIMASI RODA KEBERUNTUNGAN (SPINNING WHEEL) -->
+    <div id="wheelModal" class="fixed inset-0 bg-black/85 backdrop-blur-md flex flex-col items-center justify-center p-4 hidden z-50">
+        <div class="text-center mb-4">
+            <h2 class="text-3xl font-black gold-shimmer-text uppercase tracking-widest">MEMUTAR RODA TIKET</h2>
+            <p class="text-xs text-yellow-200 font-bold">Mencari Keberuntungan Kode Undian Anda...</p>
+        </div>
+        
+        <div class="relative w-72 h-72 flex items-center justify-center">
+            <!-- JARUM RODA KEBERUNTUNGAN -->
+            <div class="absolute -top-4 z-30 text-yellow-400 text-4xl drop-shadow-lg">
+                <i class="fa-solid fa-caret-down"></i>
+            </div>
+            <!-- CANVAS RODA -->
+            <canvas id="wheelCanvas" width="280" height="280" class="rounded-full border-4 border-yellow-400 shadow-2xl"></canvas>
+        </div>
+    </div>
+
+    <!-- MODAL 2: POPUP SUKSES DENGAN SLOT MACHINE -->
     <div id="successModal" class="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 hidden z-50">
         <div class="bg-white rounded-3xl max-w-sm w-full p-6 text-center card-shadow border-4 border-yellow-500 relative transform transition-all scale-100">
             <div class="w-20 h-20 bg-gradient-to-tr from-yellow-500 to-amber-300 text-red-950 rounded-full flex items-center justify-center mx-auto -mt-12 mb-3 text-3xl border-4 border-white shadow-xl animate-bounce">
@@ -128,10 +206,10 @@
             <h3 class="text-2xl font-black text-gray-900 mb-1">SELAMAT! 🎉</h3>
             <p class="text-xs font-bold text-gray-500 mb-4">Pendaftaran Anda Berhasil Terdaftar!</p>
 
-            <!-- KODE UNIK BOX -->
+            <!-- KODE UNIK BOX (SLOT MACHINE DISPLAY) -->
             <div class="bg-gradient-to-br from-red-950 via-red-900 to-red-950 p-5 rounded-2xl border-2 border-yellow-400 shadow-inner mb-4 relative overflow-hidden">
                 <p class="text-[10px] text-yellow-300 font-black uppercase tracking-widest mb-1">KODE TIKET UNDIAN ANDA</p>
-                <div id="modalCode" class="text-5xl font-black gold-shimmer-text tracking-widest my-1">----</div>
+                <div id="modalCode" class="text-5xl font-black gold-shimmer-text tracking-widest my-1 font-mono">----</div>
                 <p class="text-[9px] text-red-200 tracking-wider font-semibold uppercase">Simpan atau Screenshot Kode Ini</p>
             </div>
 
@@ -167,6 +245,55 @@
             }
         })();
 
+        // GENERATE LAMPU LED CASINO
+        function initLedLights() {
+            const container = document.getElementById('ledContainer');
+            const totalLeds = 20;
+            for (let i = 0; i < totalLeds; i++) {
+                const led = document.createElement('div');
+                led.className = 'led-light';
+                const delay = (i * 0.1) + 's';
+                led.style.animation = `runningLight 1.5s infinite ease-in-out ${delay}`;
+                
+                // Posisikan di sekeliling pinggiran
+                if (i < 6) {
+                    led.style.top = '6px';
+                    led.style.left = (i * 18 + 5) + '%';
+                } else if (i < 10) {
+                    led.style.right = '6px';
+                    led.style.top = ((i - 5) * 22) + '%';
+                } else if (i < 16) {
+                    led.style.bottom = '6px';
+                    led.style.right = ((i - 9) * 18 + 5) + '%';
+                } else {
+                    led.style.left = '6px';
+                    led.style.bottom = ((i - 15) * 22) + '%';
+                }
+                container.appendChild(led);
+            }
+        }
+        initLedLights();
+
+        // JEJAK KURSOR BINTANG EMAS
+        document.addEventListener('mousemove', function(e) {
+            if (Math.random() > 0.4) return;
+            createSparkle(e.clientX, e.clientY);
+        });
+        document.addEventListener('touchmove', function(e) {
+            if (e.touches.length > 0) {
+                createSparkle(e.touches[0].clientX, e.touches[0].clientY);
+            }
+        });
+
+        function createSparkle(x, y) {
+            const sparkle = document.createElement('div');
+            sparkle.className = 'sparkle fa-solid fa-star';
+            sparkle.style.left = (x + (Math.random() * 12 - 6)) + 'px';
+            sparkle.style.top = (y + (Math.random() * 12 - 6)) + 'px';
+            document.body.appendChild(sparkle);
+            setTimeout(() => sparkle.remove(), 800);
+        }
+
         // AWALAN KODE PER JABATAN
         const PREFIX_MAPPING = {
             "Head": "9",
@@ -177,7 +304,6 @@
             "Freelance": "4"
         };
 
-        // GENERATE KODE UNIK ANTI-DUPLIKAT PER JABATAN
         function generateUniqueCode(position) {
             const prefix = PREFIX_MAPPING[position] || "4";
             let usedCodes = JSON.parse(localStorage.getItem('luckydraw_used_codes') || '[]');
@@ -187,8 +313,8 @@
             let attempts = 0;
 
             while (!isUnique && attempts < 1000) {
-                const random3Digits = Math.floor(100 + Math.random() * 900); // 100 - 999
-                uniqueCode = prefix + random3Digits; // Total 4-Digit (contoh: 9123)
+                const random3Digits = Math.floor(100 + Math.random() * 900);
+                uniqueCode = prefix + random3Digits;
                 
                 if (!usedCodes.includes(uniqueCode)) {
                     isUnique = true;
@@ -201,11 +327,117 @@
             return uniqueCode;
         }
 
-        // FUNGSI MEMUTAR SUARA SELEBRASI
+        // RODA KEBERUNTUNGAN CANVAS
+        function drawWheel(angle) {
+            const canvas = document.getElementById('wheelCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const sections = ["9xxx Head", "8xxx SPV", "7xxx Captain", "6xxx Senior", "5xxx Junior", "4xxx Freelance"];
+            const colors = ["#B91C1C", "#D97706", "#7C2D12", "#15803D", "#1E40AF", "#6B21A8"];
+            
+            ctx.clearRect(0, 0, 280, 280);
+            const radius = 135;
+            const center = 140;
+            const sliceAngle = (2 * Math.PI) / sections.length;
+
+            sections.forEach((label, i) => {
+                const startAngle = angle + (i * sliceAngle);
+                const endAngle = startAngle + sliceAngle;
+
+                ctx.beginPath();
+                ctx.moveTo(center, center);
+                ctx.arc(center, center, radius, startAngle, endAngle);
+                ctx.closePath();
+                ctx.fillStyle = colors[i];
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = "#FBBF24";
+                ctx.stroke();
+
+                ctx.save();
+                ctx.translate(center, center);
+                ctx.rotate(startAngle + sliceAngle / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#FFF";
+                ctx.font = "bold 13px Segoe UI";
+                ctx.fillText(label, radius - 15, 5);
+                ctx.restore();
+            });
+        }
+
+        function spinWheel(callback) {
+            const wheelModal = document.getElementById('wheelModal');
+            wheelModal.classList.remove('hidden');
+            
+            let currentAngle = 0;
+            let speed = 0.4;
+            let duration = 2500;
+            let start = Date.now();
+
+            const spinInterval = setInterval(() => {
+                currentAngle += speed;
+                drawWheel(currentAngle);
+
+                if (Date.now() - start >= duration) {
+                    clearInterval(spinInterval);
+                    setTimeout(() => {
+                        wheelModal.classList.add('hidden');
+                        if (callback) callback();
+                    }, 300);
+                }
+            }, 20);
+        }
+
+        // ANIMASI SLOT MACHINE ROLLING NUMBER
+        function animateSlotMachine(targetCode, callback) {
+            const modalCodeEl = document.getElementById('modalCode');
+            let duration = 1500;
+            let intervalTime = 60;
+            let elapsed = 0;
+
+            const prefix = targetCode.charAt(0);
+
+            const interval = setInterval(() => {
+                elapsed += intervalTime;
+                const random3 = Math.floor(100 + Math.random() * 900);
+                modalCodeEl.innerText = prefix + random3;
+
+                if (elapsed >= duration) {
+                    clearInterval(interval);
+                    modalCodeEl.innerText = targetCode;
+                    if (callback) callback();
+                }
+            }, intervalTime);
+        }
+
+        // ANIMASI HUJAN KOIN EMAS
+        function triggerCoinShower() {
+            for (let i = 0; i < 25; i++) {
+                setTimeout(() => {
+                    const coin = document.createElement('div');
+                    coin.className = 'falling-coin fa-solid fa-coins text-yellow-400 drop-shadow-md';
+                    coin.style.left = Math.random() * 100 + 'vw';
+                    coin.style.animationDuration = (1.8 + Math.random() * 1.2) + 's';
+                    document.body.appendChild(coin);
+                    setTimeout(() => coin.remove(), 3000);
+                }, i * 80);
+            }
+        }
+
+        // EFEK SCREEN SHAKE
+        function triggerScreenShake() {
+            const mainContainer = document.getElementById('mainContainer');
+            mainContainer.classList.add('shake-active');
+            setTimeout(() => {
+                mainContainer.classList.remove('shake-active');
+            }, 600);
+        }
+
+        // MEMUTAR SUARA SELEBRASI
         function playVictorySound() {
             try {
                 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                const notes = [261.63, 329.63, 392.00, 523.25]; // C4, E4, G4, C5
+                const notes = [261.63, 329.63, 392.00, 523.25];
                 notes.forEach((freq, i) => {
                     const osc = audioCtx.createOscillator();
                     const gain = audioCtx.createGain();
@@ -219,11 +451,10 @@
                     osc.stop(audioCtx.currentTime + i * 0.12 + 0.3);
                 });
             } catch(e) {
-                console.log("Audio play blocked by browser policy");
+                console.log("Audio play blocked");
             }
         }
 
-        // FUNGSI EFEK KONFETI MEWAH
         function triggerConfetti() {
             if (typeof confetti === 'function') {
                 confetti({
@@ -253,14 +484,11 @@
                 return;
             }
 
-            // Generate Kode 4-Digit yang Pasti Beda
             const uniqueCode = generateUniqueCode(position);
 
-            // Status Loading
             btnSubmit.disabled = true;
             btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Menerbitkan Tiket...</span>`;
 
-            // Parameter Kirim EmailJS
             const emailParams = {
                 to_name: name,
                 position: position,
@@ -268,39 +496,48 @@
                 to_email: email
             };
 
-            try {
-                // Kirim Email di Background
-                await emailjs.send(
-                    EMAILJS_CONFIG.serviceId,
-                    EMAILJS_CONFIG.templateId,
-                    emailParams
-                );
+            // PROSES ANIMASI RODA KEBERUNTUNGAN
+            spinWheel(async () => {
+                try {
+                    // Kirim Email di Background
+                    await emailjs.send(
+                        EMAILJS_CONFIG.serviceId,
+                        EMAILJS_CONFIG.templateId,
+                        emailParams
+                    );
 
-                // Tampilkan Popup & Efek Heboh
-                document.getElementById('modalCode').innerText = uniqueCode;
-                document.getElementById('modalName').innerText = name;
-                document.getElementById('modalEmail').innerText = email;
-                document.getElementById('successModal').classList.remove('hidden');
+                    document.getElementById('modalName').innerText = name;
+                    document.getElementById('modalEmail').innerText = email;
+                    document.getElementById('successModal').classList.remove('hidden');
 
-                triggerConfetti();
-                playVictorySound();
+                    triggerScreenShake();
+                    
+                    animateSlotMachine(uniqueCode, () => {
+                        triggerConfetti();
+                        triggerCoinShower();
+                        playVictorySound();
+                    });
 
-                document.getElementById('registrationForm').reset();
+                    document.getElementById('registrationForm').reset();
 
-            } catch (err) {
-                console.error("Gagal Kirim EmailJS:", err);
-                // Tetap tampilkan kode unik di layar jika ada kendala koneksi
-                document.getElementById('modalCode').innerText = uniqueCode;
-                document.getElementById('modalName').innerText = name;
-                document.getElementById('modalEmail').innerText = email;
-                document.getElementById('successModal').classList.remove('hidden');
-                
-                triggerConfetti();
-                playVictorySound();
-            } finally {
-                btnSubmit.disabled = false;
-                btnSubmit.innerHTML = `<span>Daftar & Dapatkan Tiket</span> <i class="fa-solid fa-gift text-lg"></i>`;
-            }
+                } catch (err) {
+                    console.error("Gagal Kirim EmailJS:", err);
+                    document.getElementById('modalName').innerText = name;
+                    document.getElementById('modalEmail').innerText = email;
+                    document.getElementById('successModal').classList.remove('hidden');
+                    
+                    triggerScreenShake();
+                    
+                    animateSlotMachine(uniqueCode, () => {
+                        triggerConfetti();
+                        triggerCoinShower();
+                        playVictorySound();
+                    });
+                } finally {
+                    btnSubmit.disabled = false;
+                    btnSubmit.innerHTML = `<span>Daftar & Dapatkan Tiket</span> <i class="fa-solid fa-gift text-lg"></i>`;
+                }
+            });
         });
 
         function closeModal() {
